@@ -37,4 +37,9 @@ def warn_zero_downtime
   MARKDOWN
 end
 
+def warn_rubocop
+  rubocop.lint(git.modified_files + git.added_files)
+end
+
 warn_zero_downtime
+warn_rubocop
