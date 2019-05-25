@@ -1,8 +1,16 @@
+def debug
+  require 'pry'
+  binding.pry
+end
+
 def warn_zero_downtime
   migration_files = (git.added_files - %w(Dangerfile)).grep(%r(db/migrate))
   return nil if migration_files.empty?
 
-  warn("It looks like you have done a migration.\nBeware about [zero downtime](https://medium.com/klaxit-techblog/47528abe5136)!")
+  markdown <<~MARKDOWN
+    It looks like you have done a migration.
+    Beware about [zero downtime](https://medium.com/klaxit-techblog/47528abe5136)!
+  MARKDOWN
 
 
   if git.modified_files.grep(%r(db/structure.sql|db/schema.rb$)).empty?
@@ -19,6 +27,8 @@ def warn_zero_downtime
                          .map { |file| file[%r(app/models/(\w+).rb$), 1] }
 
   no_zero_downtime_models = modified_tables - zero_downtime_models
+
+  return nil if no_zero_downtime_models.empty?
 
   markdown <<~MARKDOWN
     These tables looks like they are not covered by zero downtime:
