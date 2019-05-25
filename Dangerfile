@@ -1,7 +1,4 @@
-def debug
-  require 'pry'
-  binding.pry
-end
+require 'active_support/core_ext/string'
 
 def warn_zero_downtime
   migration_files = (git.added_files - %w(Dangerfile)).grep(%r(db/migrate))
@@ -30,9 +27,13 @@ def warn_zero_downtime
 
   return nil if no_zero_downtime_models.empty?
 
+  # DEBUG: uncomment next lines
+  # require 'pry'
+  # binding.pry
+
   markdown <<~MARKDOWN
     These tables looks like they are not covered by zero downtime:
-    #{no_zero_downtime_models.map { |model| " - [ ] `#{model.camelcase}`" }}
+    #{no_zero_downtime_models.map { |model| " - [ ] `#{model.camelcase}`" } * "\n"}
   MARKDOWN
 end
 
