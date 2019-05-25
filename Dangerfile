@@ -20,7 +20,7 @@ def warn_zero_downtime
 
   zero_downtime_models = (git.modified_files + git.added_files - %w(Dangerfile))
                          .select { |file| file.match?(%r(app/models/\w+.rb$)) }
-                         .select { |file| IO.read(file).match?(/REMOVE ON NEXT RELEASE/) }
+                         .select { |file| git.diff_for_file(file).patch.match?(/^\+.*REMOVE ON NEXT RELEASE$/) }
                          .map { |file| file[%r(app/models/(\w+).rb$), 1] }
 
   no_zero_downtime_models = modified_tables - zero_downtime_models
