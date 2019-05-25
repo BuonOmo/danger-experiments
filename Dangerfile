@@ -38,7 +38,7 @@ def warn_zero_downtime
 end
 
 def warn_rubocop
-  rubocop.lint(git.modified_files + git.added_files)
+  rubocop.lint(files: git.modified_files + git.added_files, inline_comment: true, force_exclusion: true)
 end
 
 warn_zero_downtime
